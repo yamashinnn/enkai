@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+  <head>
+    <meta charset="UTF-8" th:remove="tag">
+  </head>
+  <body>
+    <div layout:fragment="content">
+      <h1 th:text="${chat.event.name}"></h1>
+      <div th:each="chat1: ${chats}" th:object="${chat1}">
+		<div th:if = "${chat1.user.email != chat.user.email}" style="width: 300px" class="border mt-2 p-2">
+          <div style="width: 300px" th:text="*{user.email}"></div>
+          <div style="width: 300px" th:text="*{body}"></div>
+          <div style="width: 300px" th:text="${#dates.format(chat1.createdAt, 'yyyy年MM月dd日 HH時mm分ss秒')}"></div>
+        </div>
+        <div th:if = "${chat1.user.email == chat.user.email}" class="clearfix">
+		  <div style="width: 300px" class="float-end mt-2 p-2 text-white bg-success">
+            <div style="width: 300px" th:text="*{user.email}"></div>
+            <div style="width: 300px" th:text="*{body}"></div>
+            <div style="width: 300px" th:text="${#dates.format(chat1.createdAt, 'yyyy年MM月dd日 HH時mm分ss秒')}"></div>
+          </div>
+        </div>
+      </div>
+      <form th:action="@{/admin/chats/create}" th:object="${chat}" method="post">
+        <ul th:if="${#fields.hasErrors()}" class="alert alert-danger" role="alert">
+          <li th:each="err : ${#fields.errors('*')}">
+            <span th:text="${err}"></span>
+          </li>
+        </ul>
+        <div class="form-group" th:classappend="${#fields.hasErrors('body')} ? error">
+          <label for="body">Body</label>
+          <input class="form-control" type="text" id="body" th:field="*{body}">
+        </div>
+        <input class="form-control" type="hidden" id="event" th:field="*{event.id}">
+        <input class="form-control" type="hidden" id="user" th:field="*{user.id}">
+      	<div>
+          <input class="btn btn-primary" type="submit" value="登録">
+      	</div>
+      </form>
+    </div>
+  </body>
+</html>
